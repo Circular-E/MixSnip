@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data:; font-src 'self'; connect-src 'none';">
+<style>
+html{height:100%}body{box-sizing:border-box;min-height:100%;margin:0;padding:10px 22px;background:#fff;color:#111;font-family:'Segoe UI','Microsoft YaHei',sans-serif;font-size:24px;line-height:1.5;overflow-wrap:anywhere;display:flex;flex-direction:column;justify-content:center}
+#content{white-space:pre-wrap;width:100%} .empty{color:#b4b4be;text-align:center;font-size:15px;padding:16px 0}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%} #error{font-size:12px;color:#b45309;white-space:pre-wrap}
+</style>
+<script>
+window.MathJax={loader:{load:[]},tex:{packages:['base','ams','newcommand','noundefined'],inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true,maxBuffer:30000},svg:{fontCache:'local'},options:{enableMenu:false},startup:{typeset:false}};
+let revision=0;
+window.previewState={ready:false,rendered:false,error:''};
+window.officeMath=function(parts){
+ try {
+  if(!MathJax.tex2mml)throw new Error('公式引擎尚未加载，请稍后重试。');
+  const converted=parts.map(p=>p.kind==='math'?{...p,mathml:MathJax.tex2mml(p.text,{display:!!p.display})}:p);
+  return JSON.stringify({parts:converted});
+ }catch(e){return JSON.stringify({error:String(e.message||e)});}
+};
+window.renderLatex=async function(text){
+ const mine=++revision, content=document.getElementById('content'),error=document.getElementById('error');
+ try {
+  await MathJax.startup.promise;if(mine!==revision)return;
+  MathJax.typesetClear([content]);content.replaceChildren();error.textContent='';
+  if(!text.trim()){content.className='empty';content.textContent='识别后，公式会显示在这里';window.previewState={ready:true,rendered:false,error:''};return;}
+  content.className='';
+  const hasMath=/\$|\\[\[\(]/.test(text);
+  const looksMath=/\\[a-zA-Z]+|[_^=+]/.test(text);
+  content.textContent=(!hasMath&&looksMath)?'\\['+text+'\\]':text;
+  await MathJax.typesetPromise([content]);
+  if(mine!==revision)return;
+  const invalid=content.querySelector('[data-mjx-error]');
+  if(invalid)error.textContent='公式语法可能不完整，可在下方 LaTeX 中修正。';
+  window.previewState={ready:true,rendered:!!content.querySelector('svg'),error:invalid?invalid.getAttribute('data-mjx-error'):''};
+ }catch(e){error.textContent='暂时无法预览，请检查 LaTeX 语法。';window.previewState={ready:true,rendered:false,error:String(e)};}
+};
+</script><script src="tex-svg.js"></script></head>
+<body><div id="content" class="empty">识别后，公式会显示在这里</div><div id="error"></div></body></html>

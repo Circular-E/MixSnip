@@ -1,0 +1,8 @@
+{
+  "url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-FormulaNet_plus-M_infer.tar",
+  "sha256": {
+    "inference.json": "8333a7f650766a748e273c550d278601dd19dfeee1c4b01038ff632f134d9884",
+    "inference.pdiparams": "f16ef9b5c8227da70d3ec969a5195f4d62c1154427b883f4d6cff07633654041",
+    "inference.yml": "87b5f3d7f2b2fe553627d77b37f496608ca150ebd0ef62d362591edca47b5538"
+  }
+}

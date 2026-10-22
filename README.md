@@ -1,104 +1,57 @@
-![](demo/icon.png)
-# MixTeX - Multimodal LaTeX OCR with CPU Inference
-[![Paper](https://img.shields.io/badge/Paper-arxiv.2406.17148-white)](https://arxiv.org/abs/2406.17148) 
-<a href="https://colab.research.google.com/github/RQLuo/MixTeX/blob/main/MixTex_Demo.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Community%20Space-blue)](https://huggingface.co/MixTex/ZhEn-Latex-OCR)
-[![Demo Video](https://img.shields.io/badge/📺%20Demo-Video%20-white)](https://www.youtube.com/watch?v=PqQdQ5xT-vk)
-![image](https://github.com/user-attachments/assets/05775c1a-ebb1-4f57-a619-189c36d9bc1f)
+# MixSnip
 
-## Online Demo: https://mineai.top/
+Windows 本地公式识别桌面软件：快捷键截图、公式预览、复制 LaTeX、Word/PPT 可编辑公式，全程离线。
 
-MixTeX is an innovative multimodal LaTeX recognition mini-program, independently developed by our team. It performs efficient CPU-based inference in a local offline environment. Whether it's LaTeX formulas, tables, or mixed text, MixTeX can easily recognize them all, supporting both Chinese and English processing. Thanks to powerful technical support and optimized design, MixTeX can run efficiently without GPU resources, suitable for any Windows computer, greatly facilitating user experience.
-![ee94ff1cdf2949b292c6c8ea945a738](https://github.com/user-attachments/assets/a669a704-c523-49a2-8110-6f8bbdd5b4f9)
+Fork 自 [RQLuo/MixTeX-Latex-OCR](https://github.com/RQLuo/MixTeX-Latex-OCR)。MixSnip 位于 [`desktop/`](desktop/)，上游说明保存在 [README.upstream.md](README.upstream.md)，上游代码和提交历史保留。本项目与 Mathpix 无关联，使用独立名称和图标。
 
-## Source code setup:
-*Make sure that you have read the user agreement before starting.*
+## 下载
 
-1. Navigate to the `mixtexgui` directory: `cd mixtexgui`
-2. Create a new Conda environment: `conda create -n mixtex python=3.10.14`
-3. Activate the environment: `conda activate mixtex`
-4. Run `pip install -r requirements.txt`
-5. Build the application with PyInstaller: `pyinstaller mixtex_ui.spec`
-6. If possible, could everyone please submit the packaged programs from other platforms to GitHub? Thank you for your support!
+在 [Releases](https://github.com/Circular-E/MixSnip/releases/latest) 下载 `MixSnip-0.3.0-windows-x64-portable.zip`，**完整解压**到有写入权限的目录，运行 `MixSnip.exe`。不要在压缩包内运行，也不要单独移动 exe。
 
-## Key Features
+支持 Windows 10/11 x64，无需另装 Python、GPU、LaTeX 或 API Key。包内已含模型和运行库；可用发布页的 `SHA256SUMS.txt` 校验下载文件。
 
-- **LaTeX Formula Recognition**: Accurately recognizes complex LaTeX mathematical formulas, ensuring mathematical expression accuracy.
-- **Table Recognition**: Efficiently processes and recognizes various tables, generating corresponding LaTeX table code.
-- **Mixed Text Recognition**: Simultaneously processes text containing words, formulas, and tables, guaranteeing completeness and accuracy of recognition results.
-- **Bilingual Support**: Whether Chinese or English, MixTeX achieves high-precision recognition, meeting needs in different language environments.
+- 全局快捷键截图，默认 Ctrl+Alt+M；占用时尝试 Ctrl+Shift+M / Ctrl+Alt+S。
+- 黑底公式直接截图，内部自动处理识别副本；Original 页和历史保留原始颜色。
+- OCR / Data / Original 页面、公式预览、LaTeX 编辑与复制、历史查询。
+- **Copy MS Word**：Word/PPT 中粘贴为可编辑公式；**Open DOCX**：导出原生 OMML 文档。
+- PNG 导出、系统托盘、可选开机自启动、识别取消与超时。
+- 默认 PP-FormulaNet_plus-M，可在设置中切回 MixTeX v3.2.4。
 
-## Technical Characteristics
+![MixSnip 界面](docs/snip-view.png)
 
-- **Local Offline Inference**: No internet connection required, ensuring data privacy and security, suitable for high-confidentiality user scenarios.
-- **Lightweight Design**: The program startup file is only about 50 MB, facilitating quick deployment and startup.
-- **Efficient Operation**: Although the model file size is 300 MB, causing a slightly slower startup, once loaded, it runs extremely fast, ensuring a smooth user experience.
-- **No GPU Required**: Runs efficiently on CPU, suitable for all Windows computers without the need for high-end hardware support.
+界面图使用手动输入公式展示排版，不代表该图经过 OCR 识别。
 
-## User Guide
+## 识别效果与限制
 
-1. **Clipboard Image Recognition**: Users can enable the clipboard function by pressing `Win+V` and copy the image to be recognized to the clipboard.
-2. **Screenshot Recognition**: Use the built-in Windows screenshot tool or the screenshot key on the keyboard to capture and directly recognize the screenshot content.
+一次小样本验证使用 8 张印刷公式截图、4 类不同公式。统一白底预处理，CPU 4 线程，每图重复 2 次，统计第 2 次耗时：
 
-## User
+| 模型 | 严格整式正确（含标点） | 公式本体正确 | 热运行中位数 |
+|---|---:|---:|---:|
+| MixTeX | 2/8 | 2/8 | 0.95 秒 |
+| PP-FormulaNet_plus-M | 7/8 | 8/8 | 3.26 秒 |
+| PP-FormulaNet_plus-L | 7/8 | 8/8 | 6.54 秒 |
 
-As a permanently free software, MixTeX promises continuous optimization while maintaining local offline operation, with no advertisements, providing the best user experience. 
+测试机器为 i9-13900HX，PaddleOCR 3.3.2 / PaddlePaddle 3.2.2，MKL-DNN 关闭。M/L 都在同一张图末尾多生成逗号，因此选择准确率相同、速度更快的 M。首次加载约 17～21 秒，之后复用模型。实际速度取决于机器和图片。
 
-## Demo
+这是存在重复截图的个人小样本测试，不是通用准确率，也不是与 Mathpix 的对比。个人历史和原图不随公开包分发。复杂手写、模糊图和长公式可能错误，请核对关键符号与标点。FormulaNet 以公式为主，纯文字可切换 MixTeX。PDF 全文转换尚未实现，绿色条只表示任务状态。
 
-MixTeX excels in recognizing complex text, with particularly good performance in English recognition and comparable results for Chinese. The following image demonstrates MixTeX's recognition capabilities for complex text: (Recommended Image size: 400 x 500)
+## 开发
 
-![](demo/1.gif)
+参见 [开发与打包说明](desktop/BUILD.md)。桌面基于 Python 3.12 / PySide6，Paddle 在独立本地子进程中运行。
 
-![](demo/3.png)
-
-![](demo/2.png)
-
-## Environment Requirements
-
-MixTeX uses LaTeX environment for code conversion. We recommend the following LaTeX configuration:
-
-```latex
-\documentclass{ctexart}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{stmaryrd}
-\usepackage{color}
+```text
+desktop/source/      应用、OCR 适配器、Office 导出、测试与构建配置
+desktop/licenses/    上游及依赖许可、模型来源和校验值
+desktop/models/      默认配置（Git 中不提交权重）
+desktop/scripts/     清洁打包脚本
 ```
 
-## Changelog
+运行时在软件目录的 `data/` 创建截图、历史与设置；发布包不含个人 data。没有云端识别、账号、遥测或自动更新。
 
-~~During usage, you may encounter the following warning message: `Error during OCR: Invalid image type. Expected either PIL.Image.Image, numpy.ndarray, torch.Tensor, tf.Tensor or jax.ndarray, but got <class 'list'>.`~~
+## 授权与署名
 
-v1.0.1 [Resolved] **Critical**: Unable to copy files while running the software, and copying files caused warnings.
+MixTeX 作者为 Renqing Luo / RQLuo，保留 [AGPL-3.0](LICENSE) 与[上游用户协议](desktop/licenses/MixTeX-upstream-terms.md)。**上游另声明基于 MixTeX 模型的衍生品不得用于商业用途**；本包包含该模型，请遵守其条款。MixSnip 应用衍生代码采用 AGPL-3.0，完整对应源码随仓库与发布包提供。
 
-~~Consistent warning message: `Error during OCR: Unable to infer channel dimension format.`~~
+PP-FormulaNet / PaddleOCR 来自 PaddlePaddle 团队，使用 Apache-2.0；采用官方未修改推理权重。PySide6/Qt、MathJax、ONNX Runtime、Paddle、CPython 等许可见 [`desktop/licenses/`](desktop/licenses/) 及运行库。Office 转换使用电脑上已有的 Office XSL 或开源转换器，不分发微软 XSL。
 
-v1.0.2 [Resolved] **Extreme**: Some users' monitors are too advanced, with non-RGB colors, causing the software to be unusable.
-
-v1.1.2 [Optimization] Added data collection function, fine-tuned 300 real small samples, optimized curly bracket and table recognition. More tables and formulas have been added for pre-training, including the formulas provided by @github.com/ZLab511
-
-v2.1.2 [Upgrade] Synthesized handwriting dataset, fine-tuned 100 real manuscripts, retrained the model, and partially supported handwritten text mixed formula.
-
-v2.2.3 [Upgrade] Fine-tuned 150 real manuscripts + 300, and supported handwritten text mixed formula and black background.
-
-v3.2.4 [Upgrade] Fine-tuned 500 real, and supported multiple choice questions ocr, In terms of software, we support pressing F2 after clicking the icon to pause recognition, and pressing F2 again to start recognition. Improved the escaping of multi-line formulas and in-text formulas into $$ wrappers, and improved data collection.
-
-## Limitations
-
-Currently, MixTeX only supports recognition of clear printed fonts for Chinese and English mixed formulas and relatively simple tables. We plan to expand our capabilities in future updates:
-
-- Support for handwritten formulas and text recognition
-- Multi-language support
-- Complex table recognition
-
-It's important to note that our model's training dataset is largely synthetic and generated, which results in somewhat rough, uniform, and limited data. In future iterations, we will gradually enhance and expand our training dataset with real-world scenarios. This improvement will lead to better recognition accuracy and increased robustness of the system.
-
-We appreciate your understanding as we continue to develop and refine MixTeX. Your feedback and patience are invaluable as we work towards creating a more comprehensive and versatile tool.
-
-## Conclusion
-
-MixTeX is committed to providing users with the most convenient and efficient multimodal LaTeX recognition tool. We look forward to your use and feedback. If you have any suggestions or encounter any issues with MixTeX, please feel free to contact us. Let's work together to create the best LaTeX recognition tool!
-
-![donate](https://github.com/user-attachments/assets/9f52a771-ab84-466c-9a7e-629060e251cc)
-
+本项目不代表 MixTeX、PaddlePaddle、Microsoft 或 Mathpix 官方产品。

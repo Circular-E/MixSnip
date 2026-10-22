@@ -1,0 +1,4 @@
+paddlepaddle==3.2.2
+paddleocr==3.3.2
+tokenizers==0.21.1
+ftfy==6.3.1
