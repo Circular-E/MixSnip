@@ -6,7 +6,9 @@ Fork 自 [RQLuo/MixTeX-Latex-OCR](https://github.com/RQLuo/MixTeX-Latex-OCR)。M
 
 ## 下载
 
-在 [Releases](https://github.com/Circular-E/MixSnip/releases/latest) 下载 `MixSnip-0.3.0-windows-x64-portable.zip`，**完整解压**到有写入权限的目录，运行 `MixSnip.exe`。不要在压缩包内运行，也不要单独移动 exe。
+在 [Releases](https://github.com/Circular-E/MixSnip/releases/latest) 下载 **`MixSnip-0.3.0-Setup-x64.exe`**，双击按提示安装即可。安装器支持中文，可选安装目录、桌面快捷方式和开机自启动，包含全部模型及运行库，无需另装依赖。默认安装到当前用户的程序目录，无需管理员权限；卸载保留个人 `data/` 历史文件。
+
+也提供 `MixSnip-0.3.0-windows-x64-portable.zip` 免安装版：**完整解压**到有写入权限的目录，运行 `MixSnip.exe`。不要在压缩包内运行，也不要单独移动 exe。
 
 支持 Windows 10/11 x64，无需另装 Python、GPU、LaTeX 或 API Key。包内已含模型和运行库；可用发布页的 `SHA256SUMS.txt` 校验下载文件。
 
@@ -44,6 +46,7 @@ desktop/source/      应用、OCR 适配器、Office 导出、测试与构建配
 desktop/licenses/    上游及依赖许可、模型来源和校验值
 desktop/models/      默认配置（Git 中不提交权重）
 desktop/scripts/     清洁打包脚本
+desktop/installer/   中文/英文 Windows 安装器脚本
 ```
 
 运行时在软件目录的 `data/` 创建截图、历史与设置；发布包不含个人 data。没有云端识别、账号、遥测或自动更新。

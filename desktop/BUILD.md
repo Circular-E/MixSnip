@@ -40,3 +40,15 @@ desktop/.venv/Scripts/python.exe desktop/scripts/package_release.py --app deskto
 ```
 
 打包脚本使用组件白名单，排除个人 data、日志、字节码与凭据文件，验证 ZIP CRC 和组件，并生成 SHA-256。`git archive --format=zip HEAD` 可生成完整对应源码包。模型、运行库和 ZIP 只放 GitHub Releases，不放 Git 历史。
+
+## 构建 Setup.exe
+
+使用官方 Inno Setup 7.1.0 编译 `installer/MixSnip.iss`。在已经准备好完整应用目录后执行，例如：
+
+```powershell
+ISCC.exe /DAppSource=C:\Build\MixSnip /DBuildOutput=C:\Build\releases desktop/installer/MixSnip.iss
+```
+
+AppSource 必须包含桌面 EXE、源码、模型、独立运行库与许可。安装器的 Files 段显式列出允许组件，不打包 data。支持中文/英文、当前用户安装、开始菜单/桌面快捷方式、可选开机启动。卸载只删除安装器记录的文件，不递归删除 data；只有启动项明确指向本次卸载目录时才删除该启动项。
+
+分发安装程序同时提供完整对应源码与 SHA-256。当前构建未配置商业代码签名证书。
